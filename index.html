@@ -739,24 +739,35 @@
             }
 
             try {
-                let url;
+                let redditUrl;
                 if (state.currentFilter === 'all') {
                     // Fetch from multiple subreddits
                     const subredditList = state.subreddits.join('+');
-                    url = `https://www.reddit.com/r/${subredditList}/hot.json?limit=25${state.after ? `&after=${state.after}` : ''}`;
+                    redditUrl = `https://www.reddit.com/r/${subredditList}/hot.json?limit=25&raw_json=1${state.after ? `&after=${state.after}` : ''}`;
                 } else {
-                    url = `https://www.reddit.com/r/${state.currentFilter}/hot.json?limit=25${state.after ? `&after=${state.after}` : ''}`;
+                    redditUrl = `https://www.reddit.com/r/${state.currentFilter}/hot.json?limit=25&raw_json=1${state.after ? `&after=${state.after}` : ''}`;
                 }
 
-                const response = await fetch(url, {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
+                let data;
 
-                if (!response.ok) throw new Error('Failed to fetch posts');
+                // Try direct fetch first
+                try {
+                    const response = await fetch(redditUrl, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    if (!response.ok) throw new Error('Direct fetch failed');
+                    data = await response.json();
+                } catch (directError) {
+                    // If direct fetch fails (CORS), try proxy
+                    console.log('Direct fetch failed, trying CORS proxy...');
+                    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`;
+                    const proxyResponse = await fetch(proxyUrl);
+                    if (!proxyResponse.ok) throw new Error('Proxy fetch failed');
+                    data = await proxyResponse.json();
+                }
 
-                const data = await response.json();
                 state.after = data.data.after;
                 const newPosts = data.data.children.filter(post => !post.data.stickied);
                 state.posts = refresh ? newPosts : [...state.posts, ...newPosts];

@@ -1,8 +1,14 @@
-const CACHE_NAME = 'reddit-reader-v1';
-const STATIC_ASSETS = [
+const CACHE_NAME = 'reddit-reader-v2';
+
+// Core assets that must be cached
+const CORE_ASSETS = [
   './',
   './index.html',
-  './manifest.json',
+  './manifest.json'
+];
+
+// Optional assets (icons) - won't fail if missing
+const OPTIONAL_ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png'
@@ -11,8 +17,18 @@ const STATIC_ASSETS = [
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Cache core assets (required)
+      await cache.addAll(CORE_ASSETS);
+
+      // Try to cache optional assets (don't fail if missing)
+      for (const asset of OPTIONAL_ASSETS) {
+        try {
+          await cache.add(asset);
+        } catch (e) {
+          console.log('Optional asset not available:', asset);
+        }
+      }
     })
   );
   self.skipWaiting();

@@ -912,24 +912,21 @@
                 let allPosts = [];
 
                 if (state.currentFilter === 'all' && state.subreddits.length > 1) {
-                    // Fetch from each subreddit separately to avoid iOS issues with '+' in URLs
-                    const MAX_SUBREDDITS = 5; // Limit to avoid too many requests
+                    // Fetch from each subreddit SEQUENTIALLY to avoid iOS issues
+                    const MAX_SUBREDDITS = 5;
                     const subredditsToFetch = state.subreddits.slice(0, MAX_SUBREDDITS);
 
-                    // Fetch all subreddits in parallel
-                    const fetchPromises = subredditsToFetch.map(async (subreddit) => {
+                    for (const subreddit of subredditsToFetch) {
                         try {
                             const url = `https://www.reddit.com/r/${subreddit}/hot.json?limit=10&raw_json=1`;
                             const data = await fetchRedditJson(url);
-                            return data.data.children.filter(post => !post.data.stickied);
+                            const posts = data.data.children.filter(post => !post.data.stickied);
+                            allPosts = allPosts.concat(posts);
                         } catch (e) {
                             console.error(`Failed to fetch r/${subreddit}:`, e);
-                            return [];
+                            // Continue to next subreddit
                         }
-                    });
-
-                    const results = await Promise.all(fetchPromises);
-                    allPosts = results.flat();
+                    }
 
                     // Sort by score (descending)
                     allPosts.sort((a, b) => b.data.score - a.data.score);

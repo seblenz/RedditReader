@@ -509,17 +509,122 @@
             font-size: 12px;
             color: var(--text-secondary);
         }
+
+        /* Compact view mode */
+        .compact .post-card {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 10px;
+        }
+
+        .compact .post-header {
+            display: none;
+        }
+
+        .compact .post-compact-thumb {
+            width: 70px;
+            height: 70px;
+            min-width: 70px;
+            border-radius: 8px;
+            background: var(--bg-color);
+            margin-right: 12px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .compact .post-compact-thumb.no-thumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .compact .post-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .compact .post-title {
+            padding: 0;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .compact .post-compact-meta {
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .compact .post-image,
+        .compact .post-thumbnail,
+        .compact .post-selftext,
+        .compact .post-link {
+            display: none;
+        }
+
+        .compact .post-footer {
+            display: none;
+        }
+
+        .compact .post-compact-stats {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .compact .post-compact-stats .upvotes {
+            color: var(--upvote-color);
+        }
+
+        /* Header buttons container */
+        .header-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .header-btn.active {
+            background: rgba(255,255,255,0.4);
+        }
+
+        /* Hide compact-only elements in normal view */
+        .post-compact-thumb,
+        .post-compact-meta,
+        .post-compact-stats {
+            display: none;
+        }
+
+        .compact .post-compact-meta,
+        .compact .post-compact-stats {
+            display: flex;
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <h1>Reddit Reader</h1>
-        <button class="header-btn" id="settingsBtn" aria-label="Settings">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        </button>
+        <div class="header-buttons">
+            <button class="header-btn" id="viewToggleBtn" aria-label="Toggle view">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                </svg>
+            </button>
+            <button class="header-btn" id="settingsBtn" aria-label="Settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
     </header>
 
     <div class="subreddit-tabs" id="subredditTabs">
@@ -562,7 +667,8 @@
             currentFilter: 'all',
             posts: [],
             after: null,
-            loading: false
+            loading: false,
+            viewMode: localStorage.getItem('viewMode') || 'card' // 'card' or 'compact'
         };
 
         // DOM Elements
@@ -576,8 +682,15 @@
             subredditList: document.getElementById('subredditList'),
             addSubredditForm: document.getElementById('addSubredditForm'),
             subredditInput: document.getElementById('subredditInput'),
-            pullIndicator: document.getElementById('pullIndicator')
+            pullIndicator: document.getElementById('pullIndicator'),
+            viewToggleBtn: document.getElementById('viewToggleBtn')
         };
+
+        // Apply initial view mode
+        if (state.viewMode === 'compact') {
+            elements.feed.classList.add('compact');
+            elements.viewToggleBtn.classList.add('active');
+        }
 
         // Save subreddits to localStorage
         function saveSubreddits() {
@@ -691,36 +804,60 @@
                 nsfwHtml = `<span class="nsfw-tag">NSFW</span>`;
             }
 
+            // Compact view thumbnail
+            let compactThumbHtml = '';
+            const thumbUrl = data.thumbnail && !['self', 'default', 'nsfw', 'spoiler', ''].includes(data.thumbnail)
+                ? data.thumbnail
+                : (data.preview?.images?.[0]?.source?.url ? decodeHtml(data.preview.images[0].source.url) : null);
+
+            if (thumbUrl) {
+                compactThumbHtml = `<img class="post-compact-thumb" src="${thumbUrl}" alt="" loading="lazy" onerror="this.classList.add('no-thumb'); this.src=''; this.innerHTML='No img';">`;
+            } else {
+                compactThumbHtml = `<div class="post-compact-thumb no-thumb">${data.is_self ? 'Text' : 'Link'}</div>`;
+            }
+
             return `
                 <article class="post-card">
-                    <div class="post-header">
-                        <div class="subreddit-icon" style="background: ${subredditColor}">
-                            ${getSubredditInitial(data.subreddit)}
+                    ${compactThumbHtml}
+                    <div class="post-content">
+                        <div class="post-header">
+                            <div class="subreddit-icon" style="background: ${subredditColor}">
+                                ${getSubredditInitial(data.subreddit)}
+                            </div>
+                            <div class="post-meta">
+                                <div class="post-subreddit">r/${data.subreddit}</div>
+                                <div class="post-author">u/${data.author} · <span class="time-ago">${timeAgo(data.created_utc)}</span></div>
+                            </div>
                         </div>
-                        <div class="post-meta">
-                            <div class="post-subreddit">r/${data.subreddit}</div>
-                            <div class="post-author">u/${data.author} · <span class="time-ago">${timeAgo(data.created_utc)}</span></div>
+                        <h2 class="post-title">
+                            <a href="${permalink}" target="_blank" rel="noopener">${decodeHtml(data.title)}</a>
+                            ${flairHtml}${nsfwHtml}
+                        </h2>
+                        <div class="post-compact-meta">
+                            <span>r/${data.subreddit}</span>
+                            <span>u/${data.author}</span>
+                            <span>${timeAgo(data.created_utc)}</span>
                         </div>
-                    </div>
-                    <h2 class="post-title">
-                        <a href="${permalink}" target="_blank" rel="noopener">${decodeHtml(data.title)}</a>
-                        ${flairHtml}${nsfwHtml}
-                    </h2>
-                    ${mediaHtml}
-                    ${selftextHtml}
-                    ${linkHtml}
-                    <div class="post-footer">
-                        <div class="post-stat upvotes">
-                            <svg viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 4L3 15h6v5h6v-5h6L12 4z"/>
-                            </svg>
-                            ${formatNumber(data.score)}
+                        <div class="post-compact-stats">
+                            <span class="upvotes">${formatNumber(data.score)} pts</span>
+                            <span>${formatNumber(data.num_comments)} comments</span>
                         </div>
-                        <div class="post-stat">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg>
-                            ${formatNumber(data.num_comments)}
+                        ${mediaHtml}
+                        ${selftextHtml}
+                        ${linkHtml}
+                        <div class="post-footer">
+                            <div class="post-stat upvotes">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 4L3 15h6v5h6v-5h6L12 4z"/>
+                                </svg>
+                                ${formatNumber(data.score)}
+                            </div>
+                            <div class="post-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                ${formatNumber(data.num_comments)}
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -742,7 +879,10 @@
                 let redditUrl;
                 if (state.currentFilter === 'all') {
                     // Fetch from multiple subreddits
-                    const subredditList = state.subreddits.join('+');
+                    // Limit to 10 subreddits to avoid URL length issues on iOS
+                    const MAX_SUBREDDITS = 10;
+                    const subredditsToFetch = state.subreddits.slice(0, MAX_SUBREDDITS);
+                    const subredditList = subredditsToFetch.join('+');
                     redditUrl = `https://www.reddit.com/r/${subredditList}/hot.json?limit=25&raw_json=1${state.after ? `&after=${state.after}` : ''}`;
                 } else {
                     redditUrl = `https://www.reddit.com/r/${state.currentFilter}/hot.json?limit=25&raw_json=1${state.after ? `&after=${state.after}` : ''}`;
@@ -750,9 +890,23 @@
 
                 let data;
 
+                // Helper function to fetch with timeout
+                async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), timeout);
+                    try {
+                        const response = await fetch(url, { ...options, signal: controller.signal });
+                        clearTimeout(timeoutId);
+                        return response;
+                    } catch (error) {
+                        clearTimeout(timeoutId);
+                        throw error;
+                    }
+                }
+
                 // Try direct fetch first
                 try {
-                    const response = await fetch(redditUrl, {
+                    const response = await fetchWithTimeout(redditUrl, {
                         headers: {
                             'Accept': 'application/json'
                         }
@@ -763,7 +917,7 @@
                     // If direct fetch fails (CORS), try proxy
                     console.log('Direct fetch failed, trying CORS proxy...');
                     const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(redditUrl)}`;
-                    const proxyResponse = await fetch(proxyUrl);
+                    const proxyResponse = await fetchWithTimeout(proxyUrl);
                     if (!proxyResponse.ok) throw new Error('Proxy fetch failed');
                     data = await proxyResponse.json();
                 }
@@ -884,7 +1038,16 @@
             elements.settingsModal.classList.remove('visible');
         }
 
+        // Toggle view mode
+        function toggleViewMode() {
+            state.viewMode = state.viewMode === 'card' ? 'compact' : 'card';
+            localStorage.setItem('viewMode', state.viewMode);
+            elements.feed.classList.toggle('compact');
+            elements.viewToggleBtn.classList.toggle('active');
+        }
+
         // Event Listeners
+        elements.viewToggleBtn.addEventListener('click', toggleViewMode);
         elements.settingsBtn.addEventListener('click', openSettings);
         elements.closeModal.addEventListener('click', closeSettings);
         elements.settingsModal.addEventListener('click', (e) => {

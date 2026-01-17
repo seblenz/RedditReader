@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Reddit Reader Icons</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 { color: #ff4500; }
+        .icon-preview {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .icon-item {
+            text-align: center;
+        }
+        .icon-item canvas {
+            border: 1px solid #ddd;
+            border-radius: 20%;
+        }
+        .icon-item p {
+            margin: 8px 0 0;
+            font-size: 14px;
+            color: #666;
+        }
+        button {
+            background: #ff4500;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #e03d00; }
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .instructions h2 { margin-top: 0; }
+        .instructions ol { padding-left: 20px; }
+        .instructions li { margin: 10px 0; }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Reddit Reader Icon Generator</h1>
+    <p>Click the buttons below to download the app icons, then place them in the <code>icons/</code> folder.</p>
+
+    <div class="icon-preview">
+        <div class="icon-item">
+            <canvas id="icon-192" width="192" height="192"></canvas>
+            <p>192x192</p>
+            <button onclick="downloadIcon(192)">Download</button>
+        </div>
+        <div class="icon-item">
+            <canvas id="icon-512" width="512" height="512"></canvas>
+            <p>512x512</p>
+            <button onclick="downloadIcon(512)">Download</button>
+        </div>
+        <div class="icon-item">
+            <canvas id="icon-180" width="180" height="180"></canvas>
+            <p>180x180 (Apple Touch)</p>
+            <button onclick="downloadIcon(180)">Download</button>
+        </div>
+    </div>
+
+    <button onclick="downloadAll()">Download All Icons</button>
+
+    <div class="instructions">
+        <h2>Installation Instructions</h2>
+        <ol>
+            <li>Click "Download All Icons" above</li>
+            <li>Save the files to the <code>icons/</code> folder:
+                <ul>
+                    <li><code>icon-192.png</code></li>
+                    <li><code>icon-512.png</code></li>
+                    <li><code>apple-touch-icon.png</code> (the 180x180 one)</li>
+                </ul>
+            </li>
+            <li>Deploy to GitHub Pages or your hosting</li>
+            <li>On iPhone Safari, visit your site and tap Share → Add to Home Screen</li>
+        </ol>
+    </div>
+
+    <script>
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            const scale = size / 512;
+
+            // Background with rounded corners
+            ctx.fillStyle = '#ff4500';
+            const radius = 102 * scale;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // Snoo body (white circle)
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(256 * scale, 280 * scale, 140 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#ff4500';
+            ctx.beginPath();
+            ctx.arc(200 * scale, 250 * scale, 25 * scale, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(312 * scale, 250 * scale, 25 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mouth
+            ctx.strokeStyle = '#ff4500';
+            ctx.lineWidth = 12 * scale;
+            ctx.beginPath();
+            ctx.ellipse(256 * scale, 300 * scale, 60 * scale, 35 * scale, 0, 0, Math.PI);
+            ctx.stroke();
+
+            // Antenna circle (head)
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(256 * scale, 120 * scale, 35 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Antenna line
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 16 * scale;
+            ctx.beginPath();
+            ctx.moveTo(256 * scale, 155 * scale);
+            ctx.lineTo(256 * scale, 175 * scale);
+            ctx.stroke();
+
+            // Antenna arm
+            ctx.lineWidth = 12 * scale;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(350 * scale, 100 * scale);
+            ctx.lineTo(291 * scale, 120 * scale);
+            ctx.stroke();
+
+            // Antenna tip
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(365 * scale, 95 * scale, 20 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ears
+            ctx.beginPath();
+            ctx.arc(135 * scale, 200 * scale, 35 * scale, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(377 * scale, 200 * scale, 35 * scale, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`icon-${size}`);
+            const link = document.createElement('a');
+
+            let filename;
+            if (size === 180) {
+                filename = 'apple-touch-icon.png';
+            } else {
+                filename = `icon-${size}.png`;
+            }
+
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            downloadIcon(192);
+            setTimeout(() => downloadIcon(512), 100);
+            setTimeout(() => downloadIcon(180), 200);
+        }
+
+        // Draw all icons on load
+        document.querySelectorAll('canvas').forEach(drawIcon);
+    </script>
+</body>
+</html>

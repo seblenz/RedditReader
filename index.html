@@ -864,8 +864,12 @@
             `;
         }
 
+        // Detect iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
         // Helper function to fetch with timeout
-        async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+        async function fetchWithTimeout(url, options = {}, timeout = 15000) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
             try {
@@ -878,23 +882,45 @@
             }
         }
 
+        // List of CORS proxies to try
+        const corsProxies = [
+            (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`
+        ];
+
         // Fetch JSON from Reddit (with CORS proxy fallback)
         async function fetchRedditJson(url) {
-            // Try direct fetch first
-            try {
-                const response = await fetchWithTimeout(url, {
-                    headers: { 'Accept': 'application/json' }
-                });
-                if (!response.ok) throw new Error('Direct fetch failed');
-                return await response.json();
-            } catch (directError) {
-                // If direct fetch fails (CORS), try proxy
-                console.log('Direct fetch failed, trying CORS proxy...');
-                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-                const proxyResponse = await fetchWithTimeout(proxyUrl);
-                if (!proxyResponse.ok) throw new Error('Proxy fetch failed');
-                return await proxyResponse.json();
+            // On iOS, skip direct fetch (it always fails due to CORS)
+            if (!isIOS) {
+                try {
+                    const response = await fetchWithTimeout(url, {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!response.ok) throw new Error('Direct fetch failed');
+                    return await response.json();
+                } catch (directError) {
+                    console.log('Direct fetch failed, trying proxies...');
+                }
             }
+
+            // Try each proxy until one works
+            let lastError;
+            for (const proxyFn of corsProxies) {
+                try {
+                    const proxyUrl = proxyFn(url);
+                    console.log('Trying proxy:', proxyUrl.substring(0, 50) + '...');
+                    const proxyResponse = await fetchWithTimeout(proxyUrl);
+                    if (!proxyResponse.ok) {
+                        throw new Error(`Proxy returned ${proxyResponse.status}`);
+                    }
+                    const data = await proxyResponse.json();
+                    return data;
+                } catch (proxyError) {
+                    console.error('Proxy failed:', proxyError.message);
+                    lastError = proxyError;
+                }
+            }
+            throw lastError || new Error('All proxies failed');
         }
 
         // Fetch posts from Reddit
